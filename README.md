@@ -83,7 +83,7 @@ class MasterConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = '[apps].[your-app-name]'
 
-- Now, got to the project/setting.py
+- Now, go to the project/setting.py
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -95,3 +95,38 @@ INSTALLED_APPS = [
     'apps.artist' # added new
 ]
 
+- template integration:
+apps/[your-app-name]/
+
+first create dir - "templates" -> inside "templates" create another dir "[your-app-name]"
+
+- static files configuration
+apps/[your-app-name]/
+
+first create dir - "static" -> inside "static" create another dir "[your-app-name]"
+
+ - CSS
+ - JS
+ - Images...
+
+Now, come to the project/settingd.py
+
+Add this in settings.py
+import os
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR / 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
+
+Serving static files during development
+
+Now, go to the projects/urls
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

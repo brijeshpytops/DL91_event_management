@@ -74,7 +74,7 @@ first time just create apps dir in your base dir
 
     - now make app dir which you want to create inside apps dir
     apps/[your-app-name]
-([your-env-name]).../DL91_event_management >>>> python manage.py startapp [your-app-name] apps\[your-app-name]
+([your-env-name]).../DL91_event_management >>> python manage.py startapp [your-app-name] apps\[your-app-name]
 
 apps/[your-app-name]/apps.py
 
@@ -130,3 +130,25 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+- apply makemigrations and migrate
+([your-env-name]).../DL91_event_management >>> python manage.py makemigrations
+([your-env-name]).../DL91_event_management >>> python manage.py migrate
+
+- Createsuperuser
+([your-env-name]).../DL91_event_management >>> python manage.py  createsuperuser
+Username (leave blank to use 'brijesh'): admin
+Email address: admin
+Error: Enter a valid email address.
+Email address: admin@gmail.com
+Password: ***
+Password (again): ****
+Error: Your passwords didn't match.
+Password: ********
+Password (again): ********
+The password is too similar to the username.
+This password is too short. It must contain at least 8 characters.
+This password is too common.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.

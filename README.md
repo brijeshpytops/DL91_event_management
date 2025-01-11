@@ -152,3 +152,16 @@ This password is too short. It must contain at least 8 characters.
 This password is too common.
 Bypass password validation and create user anyway? [y/N]: y
 Superuser created successfully.
+
+
+Now, run your server
+
+([your-env-name]).../DL91_event_management >>> python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+January 11, 2025 - 11:37:03
+Django version 5.1.4, using settings 'project.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.

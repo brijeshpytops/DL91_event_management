@@ -165,3 +165,26 @@ January 11, 2025 - 11:37:03
 Django version 5.1.4, using settings 'project.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
+
+
+- create model:
+
+basic syntax:
+
+class ModelName(models.Model):
+    # Field Definitions
+    field_name = models.FieldType(
+        parameters
+    )
+
+    # Optional Meta Class
+    class Meta:
+        # Specify database table name
+        db_table = 'custom_table_name'
+
+        # Abstract model
+        abstract = False  # Default is False; True prevents creating a table for the model
+
+    # String representation
+    def __str__(self):
+        return self.some_field

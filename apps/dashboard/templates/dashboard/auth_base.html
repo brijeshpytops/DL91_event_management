@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="{% static 'dashboard/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+    />
+    <style>
+        .wine-btn {
+        background-color: #3b1c32;
+        color: #ffffff;
+        border: none;
+        }
+
+        .wine-btn:hover {
+            background-color: #2a1224; /* Slightly darker on hover */
+            color: #ffffff; /* Text color remains white */
+
+        }
+    </style>
+    {% block style %}
+    {% endblock %}
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+    <script src="{% static 'dashboard/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

@@ -5,7 +5,6 @@ from apps.master.helpers.dynamic_filename import dynamic_filename_for_manager_pr
 from apps.managers.constants import *
 
 from datetime import date
-# Create your models here.
 
 class Manager(BaseClass):
     first_name = models.CharField(max_length=255, null=True, blank=True)
@@ -19,7 +18,6 @@ class Manager(BaseClass):
     def __str__(self):
         return f"{self.dl91_id} | {self.first_name} {self.last_name}"
     
-
 
 class ManagerProfileInfo(BaseClass):
     DIR_NAME=UNIQUE_KEYWORD_MANAGER_PROFILE

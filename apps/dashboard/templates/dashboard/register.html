@@ -1,63 +1,112 @@
-{% extends 'dashboard/auth_base.html' %}
-{% load static %}
-{% block title %}
-    Register
-{% endblock %}
+{% extends 'dashboard/auth_base.html' %} 
+{% load static %} 
+
+{% block title %} Register {% endblock %} 
 
 {% block style %}
-    <style>
-        body{
-            background-image: url("{% static 'dashboard/images/auth-bg-reg.jpg' %}");
-            background-size: cover;
-            background-position: top;
-        }
-        .register-container {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .register-card {
-            width: 100%;
-            max-width: 400px;
-        }
-    </style>
-{% endblock %}
+<style>
+  body {
+    background-image: url("{% static 'dashboard/images/auth-bg-reg.jpg' %}");
+    background-size: cover;
+    background-position: top;
+  }
+  .register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .register-card {
+    width: 100%;
+    max-width: 500px;
+  }
+</style>
+{% endblock %} 
 
 {% block body %}
-<div class="container-fluid register-container">
-    <div class="card register-card shadow">
-        <div class="card-body">
-            <h4 class="card-title text-center mb-4">Register</h4>
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="mb-3">
-                    {{ register_form.first_name.label_tag }}
-                    {{ register_form.first_name }}
-                </div>
-                <div class="mb-3">
-                    {{ register_form.last_name.label_tag }}
-                    {{ register_form.last_name }}
-                </div>
-                <div class="mb-3">
-                    {{ register_form.email.label_tag }}
-                    {{ register_form.email }}
-                </div>
-                <div class="mb-3">
-                    {{ register_form.phone.label_tag }}
-                    {{ register_form.phone }}
-                </div>
-                <div class="mb-3">
-                    {{ register_form.password.label_tag }}
-                    {{ register_form.password }}
-                </div>
-                <div class="mb-3">
-                    {{ register_form.confirm_password.label_tag }}
-                    {{ register_form.confirm_password }}
-                </div>
-                <button type="submit" class="btn wine-btn w-100">Register</button>
-            </form>
+<div class="container-fluid register-container mt-5">
+  <div class="card register-card shadow">
+    <div class="card-body">
+      <h4 class="card-title text-center mb-4">Register</h4>
+      
+      {% if messages %}
+      <div class="alert-container">
+          {% for message in messages %}
+          <div
+            class="alert 
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}alert-danger
+              {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}alert-warning
+              {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}alert-info
+              {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}alert-success
+              {% else %}alert-secondary{% endif %} 
+              alert-dismissible fade show"
+            role="alert"
+          >
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <strong>Error:</strong>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+            <strong>Warning:</strong>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+            <strong>Info:</strong>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <strong>Success:</strong>
+            {% endif %} {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+          {% endfor %}
+      </div>
+      {% endif %}
+
+      <form
+        action="{% url 'register' %}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %}
+        <div class="row mb-3">
+          <div class="col-md-6">
+            {{ register_form.first_name.label_tag }} 
+            {{ register_form.first_name }}
+          </div>
+          <div class="col-md-6">
+            {{ register_form.last_name.label_tag }} 
+            {{ register_form.last_name }}
+          </div>
         </div>
+        <div class="mb-3">
+          {{ register_form.email.label_tag }} 
+          {{ register_form.email }}
+        </div>
+        <div class="mb-3">
+          {{ register_form.phone.label_tag }} 
+          {{ register_form.phone }}
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            {{ register_form.password.label_tag }} 
+            {{ register_form.password }}
+          </div>
+          <div class="col-md-6">
+            {{ register_form.confirm_password.label_tag }} 
+            {{ register_form.confirm_password }}
+          </div>
+        </div>
+        <button type="submit" class="btn wine-btn w-100">Register</button>
+      </form>
+
+      <!-- Links for Forgot Password and Log In -->
+      <div class="text-center mt-3">
+        <a href="" class="text-decoration-none">Forgot Password?</a>
+      </div>
+      <div class="text-center mt-2">
+        <p>Already registered? <a href="" class="text-decoration-none">Log In</a></p>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

@@ -188,3 +188,14 @@ class ModelName(models.Model):
     # String representation
     def __str__(self):
         return self.some_field
+
+
+
+# form setup:
+s-1] <form action="{% url 'url_name' %}" method="post" enctype="multipart/form-data">
+s-2] {% csrf_token %}
+s-3] name attribute required in input fields
+s-4] button type must be submit
+
+# session and cookies:
+https://witzcode.pythonanywhere.com/blog-details/cd68a82d-37e4-4ce6-a0c0-40c5cb0644b7_blog

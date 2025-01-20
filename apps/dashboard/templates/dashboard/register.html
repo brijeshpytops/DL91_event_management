@@ -6,7 +6,7 @@
 {% block style %}
 <style>
   body {
-    background-image: url("{% static 'dashboard/images/auth-bg-reg.jpg' %}");
+    background-image: url("{% static 'dashboard/images/auth-bg.jpg' %}");
     background-size: cover;
     background-position: top;
   }
@@ -19,6 +19,12 @@
   .register-card {
     width: 100%;
     max-width: 500px;
+    background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
+    backdrop-filter: blur(10px); /* Blur effect */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border for glass look */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    padding: 20px; /* Inner padding */
   }
 </style>
 {% endblock %} 

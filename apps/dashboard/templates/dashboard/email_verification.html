@@ -1,7 +1,7 @@
 {% extends 'dashboard/auth_base.html' %}
 {% load static %}
 
-{% block title %} Login {% endblock %}
+{% block title %} Verify Email {% endblock %}
 
 {% block style %}
 <style>
@@ -10,15 +10,15 @@
     background-size: cover;
     background-position: top;
   }
-  .login-container {
+  .verify-container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .login-card {
+  .verify-card {
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
     backdrop-filter: blur(10px); /* Blur effect */
     border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border for glass look */
@@ -30,10 +30,10 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid login-container">
-  <div class="card login-card shadow">
+<div class="container-fluid verify-container">
+  <div class="card verify-card shadow">
     <div class="card-body">
-      <h4 class="card-title text-center mb-4">Login</h4>
+      <h4 class="card-title text-center mb-4">Email Verification</h4>
 
       {% if messages %}
       <div class="alert-container">
@@ -60,46 +60,28 @@
       </div>
       {% endif %}
 
-      <form action="{% url 'login' %}" method="post" enctype="multipart/form-data">
+      <form action="{% url 'verify_email' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" name="email" value="{{email}}">
         <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
+          <label for="otp" class="form-label">Enter OTP</label>
           <input
-            type="email"
+            type="text"
             class="form-control"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
+            id="otp"
+            name="otp"
+            placeholder="Enter the OTP sent to your email"
             required
           />
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
-        <button type="submit" class="btn wine-btn w-100">Login</button>
+        <button type="submit" class="btn wine-btn w-100">Verify</button>
       </form>
 
-      <!-- Link for Forgot Password -->
+      <!-- Link for Resending OTP -->
       <div class="text-center mt-3">
         <p>
-          Forgot your password? 
-          <a href="" class="text-decoration-none">Reset it here</a>
-        </p>
-      </div>
-
-      <!-- Link for New User Registration -->
-      <div class="text-center mt-3">
-        <p>
-          Don't have an account? 
-          <a href="{% url 'register' %}" class="text-decoration-none">Sign up</a>
+          Didn't receive the OTP? 
+          <a href="" class="text-decoration-none">Resend OTP</a>
         </p>
       </div>
     </div>

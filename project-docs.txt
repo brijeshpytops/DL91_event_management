@@ -1,0 +1,18 @@
+DL91 - project name
+Moduels:
+   Event:
+	- Artist
+	- venue
+	- requiredThings [list]
+	- date
+	- time
+	- day
+   Artist - details
+	- profile, name[stage-name], artist fields,contact, insta profile, spotify link, artist-charge, description
+   Venue - details
+	- venue name, party name, party contact, address, city [pincode], state, country, venue-charge, public strength
+   requiredThings 
+	- name, price(1/qty)
+   EventTicketGenerate
+	- event name, artistename, venue-address, price
+ 

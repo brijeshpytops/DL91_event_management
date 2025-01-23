@@ -10,6 +10,9 @@ urlpatterns = [
     path('reset-password/<str:manager_id>', AuthViews.reset_password, name='reset_password'),
     path('logout/', AuthViews.logout, name='logout'),
     path('dashboard/', DashboardViews.dashboard, name='dashboard'),
+    path('events/', DashboardViews.events, name='events'),
+    path('artists/', DashboardViews.artists, name='artists'),
+    path('profile/', DashboardViews.profile, name='profile')
 
     # path('events/', DashboardViews.events, name='events'),
     # path('artists/', DashboardViews.artists, name='artists'),

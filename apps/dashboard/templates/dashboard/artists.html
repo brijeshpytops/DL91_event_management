@@ -1,0 +1,96 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}
+Artists
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Form Section -->
+        <div class="col-md-4">
+            <h4 class="mb-4">Add New Artist</h4>
+            <form action="{% url 'artists' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="profile_picture" class="form-label">Profile Picture</label>
+                    <input type="file" class="form-control" id="profile_picture" name="profile_picture">
+                </div>
+                <div class="mb-3">
+                    <label for="stage_name" class="form-label">Stage Name</label>
+                    <input type="text" class="form-control" id="stage_name" name="stage_name">
+                </div>
+                <div class="mb-3">
+                    <label for="artist_fields" class="form-label">Artist Fields</label>
+                    <input type="text" class="form-control" id="artist_fields" name="artist_fields">
+                </div>
+                <div class="mb-3">
+                    <label for="contact" class="form-label">Contact</label>
+                    <input type="text" class="form-control" id="contact" name="contact">
+                </div>
+                <div class="mb-3">
+                    <label for="instagram_profile" class="form-label">Instagram Profile</label>
+                    <input type="url" class="form-control" id="instagram_profile" name="instagram_profile_link">
+                </div>
+                <div class="mb-3">
+                    <label for="spotify_link" class="form-label">Spotify Link</label>
+                    <input type="url" class="form-control" id="spotify_link" name="spotify_link">
+                </div>
+                <div class="mb-3">
+                    <label for="artist_charge" class="form-label">Artist Charge</label>
+                    <input type="number" step="0.01" class="form-control" id="artist_charge" name="artist_charge">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Artist</button>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <div class="col-md-8">
+            <h4 class="mb-4">Artists</h4>
+            <table class="table table-bordered table-striped">
+                <thead class="DL91_BG">
+                    <tr>
+                        <th>Profile</th>
+                        <th>Stage Name</th>
+                        <th>Manager</th>
+                        <th>Contact</th>
+                        <th>Charge</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Assuming 'artists' is passed to the template -->
+                    {% if artists %}
+                    {% for artist in artists %}
+                    <tr>
+                        <td><img src="{{ artist.profile_picture.url }}" height="50px" alt=""> </td>
+                        <td>{{ artist.stage_name|title }}</td>
+                        <td>{{ artist.manager.first_name|title }} {{ artist.manager.last_name|title }}</td>
+                        <td>{{ artist.contact }}</td>
+                        <td>${{ artist.artist_charge }}</td>
+                        <td>
+                            <a href="" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No artists found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -6,6 +6,7 @@ from django.conf import settings
 
 from apps.managers.forms import ManagerRegisterForm
 from apps.managers.models import Manager
+from apps.artist.models import Artist
 from apps.master.helpers.unique import *
 
 from functools import wraps
@@ -172,6 +173,61 @@ class DashboardViews:
     @login_required
     def dashboard(request):
         return render(request, 'dashboard/dashboard.html')
+    
+    @login_required
+    def events(request):
+        return render(request, 'dashboard/events.html')
+    
+    @login_required
+    def artists(request):
+        if request.method == 'POST':
+            manager_id_ = request.session['manager_id']
+            profile_picture_ = request.FILES.get('profile_picture')
+            stage_name_ = request.POST['stage_name']
+            artist_fields_ = request.POST['artist_fields'] 
+            contact_ = request.POST['contact']
+            instagram_profile_link_ = request.POST['instagram_profile_link']
+            spotify_link_ = request.POST['spotify_link']
+            artist_charge_ = request.POST['artist_charge']
+            description_ = request.POST['description']
+
+            print(
+                manager_id_,
+                profile_picture_,
+                stage_name_,
+                artist_fields_,
+                contact_,
+                instagram_profile_link_,
+                spotify_link_,
+                artist_charge_,
+                description_)
+            
+            new_artist = Artist.objects.create(
+                manager_id=manager_id_,
+                profile_picture=profile_picture_,
+                stage_name=stage_name_,
+                artist_fields=artist_fields_,
+                contact=contact_,
+                instagram_profile=instagram_profile_link_,
+                spotify_link=spotify_link_,
+                artist_charge=artist_charge_,
+                description=description_
+            )
+            new_artist.save()
+            messages.success(request, 'Artist added successfully.')
+            return redirect('artists')
+        
+        artists = Artist.objects.filter(
+            manager_id=request.session['manager_id']
+        )
+        context = {
+            'artists': artists
+        }
+        return render(request, 'dashboard/artists.html', context)
+    
+    @login_required
+    def profile(request):
+        return render(request, 'dashboard/prof(ile.html')
     
 
 

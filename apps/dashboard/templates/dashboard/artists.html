@@ -1,96 +1,274 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
+{% extends 'dashboard/base.html' %} {% load static %} {% block title %} Artists
+{% endblock %} {% block style %}
+<style>
+  .show_data {
+    background-color: transparent;
+    border: none;
+  }
 
-{% block title %}
-Artists
-{% endblock %}
+  .profile-pic {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 
-{% block style %}
-{% endblock %}
-
-{% block body %}
+  .hidden-input {
+    display: none;
+  }
+</style>
+{% endblock %} {% block body %}
 <div class="container my-5">
-    <div class="row">
-        <!-- Form Section -->
-        <div class="col-md-4">
-            <h4 class="mb-4">Add New Artist</h4>
-            <form action="{% url 'artists' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="profile_picture" class="form-label">Profile Picture</label>
-                    <input type="file" class="form-control" id="profile_picture" name="profile_picture">
-                </div>
-                <div class="mb-3">
-                    <label for="stage_name" class="form-label">Stage Name</label>
-                    <input type="text" class="form-control" id="stage_name" name="stage_name">
-                </div>
-                <div class="mb-3">
-                    <label for="artist_fields" class="form-label">Artist Fields</label>
-                    <input type="text" class="form-control" id="artist_fields" name="artist_fields">
-                </div>
-                <div class="mb-3">
-                    <label for="contact" class="form-label">Contact</label>
-                    <input type="text" class="form-control" id="contact" name="contact">
-                </div>
-                <div class="mb-3">
-                    <label for="instagram_profile" class="form-label">Instagram Profile</label>
-                    <input type="url" class="form-control" id="instagram_profile" name="instagram_profile_link">
-                </div>
-                <div class="mb-3">
-                    <label for="spotify_link" class="form-label">Spotify Link</label>
-                    <input type="url" class="form-control" id="spotify_link" name="spotify_link">
-                </div>
-                <div class="mb-3">
-                    <label for="artist_charge" class="form-label">Artist Charge</label>
-                    <input type="number" step="0.01" class="form-control" id="artist_charge" name="artist_charge">
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Artist</button>
-            </form>
+  <div class="row">
+    <!-- Form Section -->
+    <div class="col-md-3">
+      <h4 class="mb-4">Add New Artist</h4>
+      <form
+        action="{% url 'artists' %}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="profile_picture" class="form-label"
+            >Profile Picture</label
+          >
+          <input
+            type="file"
+            class="form-control"
+            id="profile_picture"
+            name="profile_picture"
+          />
         </div>
-
-        <!-- Table Section -->
-        <div class="col-md-8">
-            <h4 class="mb-4">Artists</h4>
-            <table class="table table-bordered table-striped">
-                <thead class="DL91_BG">
-                    <tr>
-                        <th>Profile</th>
-                        <th>Stage Name</th>
-                        <th>Manager</th>
-                        <th>Contact</th>
-                        <th>Charge</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Assuming 'artists' is passed to the template -->
-                    {% if artists %}
-                    {% for artist in artists %}
-                    <tr>
-                        <td><img src="{{ artist.profile_picture.url }}" height="50px" alt=""> </td>
-                        <td>{{ artist.stage_name|title }}</td>
-                        <td>{{ artist.manager.first_name|title }} {{ artist.manager.last_name|title }}</td>
-                        <td>{{ artist.contact }}</td>
-                        <td>${{ artist.artist_charge }}</td>
-                        <td>
-                            <a href="" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center">No artists found.</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+        <div class="mb-3">
+          <label for="stage_name" class="form-label">Stage Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="stage_name"
+            name="stage_name"
+          />
         </div>
+        <div class="mb-3">
+          <label for="artist_fields" class="form-label">Artist Fields</label>
+          <input
+            type="text"
+            class="form-control"
+            id="artist_fields"
+            name="artist_fields"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact</label>
+          <input type="text" class="form-control" id="contact" name="contact" />
+        </div>
+        <div class="mb-3">
+          <label for="instagram_profile" class="form-label"
+            >Instagram Profile</label
+          >
+          <input
+            type="url"
+            class="form-control"
+            id="instagram_profile"
+            name="instagram_profile_link"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="spotify_link" class="form-label">Spotify Link</label>
+          <input
+            type="url"
+            class="form-control"
+            id="spotify_link"
+            name="spotify_link"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="artist_charge" class="form-label">Artist Charge</label>
+          <input
+            type="number"
+            step="0.01"
+            class="form-control"
+            id="artist_charge"
+            name="artist_charge"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            class="form-control"
+            id="description"
+            name="description"
+            rows="3"
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Artist</button>
+      </form>
     </div>
+
+    <!-- Table Section -->
+    <div class="col-md-9">
+      <h4 class="mb-4">Artists ({{total_artist}})</h4>
+      <table class="table table-bordered table-striped">
+        <thead class="DL91_BG">
+          <tr>
+            <th>Profile</th>
+            <th>Stage Name</th>
+            <th>Contact</th>
+            <th>Charge [in ₹]</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if artists %} {% for artist in artists %}
+          <tr>
+            <form
+              action="{% url 'edit_artist' artist_id=artist.dl91_id %}"
+              method="post"
+              enctype="multipart/form-data"
+            >
+              {% csrf_token %}
+              <td>
+                <img
+                  id="profile-preview-{{ artist.dl91_id }}"
+                  src="{{ artist.profile_picture.url }}"
+                  alt="Profile Picture"
+                  class="profile-pic"
+                />
+                <input
+                  type="file"
+                  id="profile-input-{{ artist.dl91_id }}"
+                  class="hidden-input show_data"
+                  name="profile_picture"
+                  accept="image/*"
+                  onchange="previewImage(this, 'profile-preview-{{ artist.dl91_id }}')"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="stage_name"
+                  id="stage_name"
+                  value="{{ artist.stage_name|title }}"
+                  class="form-control form-control-sm show_data"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="contact"
+                  id="contact"
+                  value="{{ artist.contact }}"
+                  class="form-control form-control-sm show_data"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  name="artist_charge"
+                  id="artist_charge"
+                  value="{{ artist.artist_charge }}"
+                  class="form-control form-control-sm show_data"
+                />
+              </td>
+              <td>
+                <a
+                  href="{% url 'view_artist' artist_id=artist.dl91_id %}"
+                  class="btn btn-sm btn-dark"
+                  ><i class="bi bi-eye"></i></a>
+                <button type="submit" class="btn btn-sm btn-warning">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <a
+                  href="{% url 'delete_artist' artist_id=artist.dl91_id %}"
+                  class="btn btn-sm btn-danger"
+                  ><i class="bi bi-trash3"></i
+                ></a>
+              </td>
+            </form>
+          </tr>
+          {% endfor %} {% else %}
+          <tr>
+            <td colspan="6" class="text-center">No artists found.</td>
+          </tr>
+          {% endif %}
+
+          
+        </tbody>
+        <tfoot>
+            
+            <!-- Total Records -->
+              <tr>
+                <td colspan="6" class="text-center">
+                  <div class="d-flex justify-content-center mt-4">
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination">
+                        {% if artists.has_previous %}
+                        <li class="page-item">
+                          <a
+                            class="page-link"
+                            href="?page={{ artists.previous_page_number }}"
+                            aria-label="Previous"
+                          >
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                          <span class="page-link">&laquo;</span>
+                        </li>
+                        {% endif %} {% for page_num in artists.paginator.page_range %}
+                        <li
+                          class="page-item {% if page_num == artists.number %}active{% endif %}"
+                        >
+                          <a class="page-link" href="?page={{ page_num }}"
+                            >{{ page_num }}</a
+                          >
+                        </li>
+                        {% endfor %} {% if artists.has_next %}
+                        <li class="page-item">
+                          <a
+                            class="page-link"
+                            href="?page={{ artists.next_page_number }}"
+                            aria-label="Next"
+                          >
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                          <span class="page-link">&raquo;</span>
+                        </li>
+                        {% endif %}
+                      </ul>
+                    </nav>
+                  </div>
+                </td>
+              </tr>
+            
+        </tfoot>
+      </table>
+    </div>
+  </div>
 </div>
 
+<script>
+  function previewImage(input, previewId) {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById(previewId).src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  document.querySelectorAll(".profile-pic").forEach((img) => {
+    img.addEventListener("click", function () {
+      const inputId = this.id.replace("preview", "input");
+      document.getElementById(inputId).click();
+    });
+  });
+</script>
 {% endblock %}

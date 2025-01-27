@@ -12,6 +12,9 @@ urlpatterns = [
     path('dashboard/', DashboardViews.dashboard, name='dashboard'),
     path('events/', DashboardViews.events, name='events'),
     path('artists/', DashboardViews.artists, name='artists'),
+    path('view_artist/<str:artist_id>', DashboardViews.view_artist, name='view_artist'),
+    path('delete_artist/<str:artist_id>', DashboardViews.delete_artist, name='delete_artist'),
+    path('edit_artist/<str:artist_id>', DashboardViews.edit_artist, name='edit_artist'),
     path('profile/', DashboardViews.profile, name='profile')
 
     # path('events/', DashboardViews.events, name='events'),

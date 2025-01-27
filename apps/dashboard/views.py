@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.paginator import Paginator
 
 from apps.managers.forms import ManagerRegisterForm
 from apps.managers.models import Manager
@@ -184,7 +185,7 @@ class DashboardViews:
             manager_id_ = request.session['manager_id']
             profile_picture_ = request.FILES.get('profile_picture')
             stage_name_ = request.POST['stage_name']
-            artist_fields_ = request.POST['artist_fields'] 
+            artist_fields_ = request.POST['artist_fields']
             contact_ = request.POST['contact']
             instagram_profile_link_ = request.POST['instagram_profile_link']
             spotify_link_ = request.POST['spotify_link']
@@ -201,7 +202,7 @@ class DashboardViews:
                 spotify_link_,
                 artist_charge_,
                 description_)
-            
+
             new_artist = Artist.objects.create(
                 manager_id=manager_id_,
                 profile_picture=profile_picture_,
@@ -217,17 +218,73 @@ class DashboardViews:
             messages.success(request, 'Artist added successfully.')
             return redirect('artists')
         
-        artists = Artist.objects.filter(
-            manager_id=request.session['manager_id']
-        )
+        # Get artists based on the manager's ID from the session
+        artists = Artist.objects.filter(manager_id=request.session['manager_id']).order_by('-created_at')
+
+        # Get total artist count
+        total_artist = artists.count()
+
+        # Paginate the artist list
+        paginator = Paginator(artists, 5)  # 5 artists per page
+        page_number = request.GET.get('page', 1)
+
+        try:
+            artists = paginator.page(page_number)
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+            artists = paginator.page(1)
+
+        # Pass both artists and total_artist to the context
         context = {
-            'artists': artists
+            'artists': artists,
+            'total_artist': total_artist
         }
         return render(request, 'dashboard/artists.html', context)
+
     
     @login_required
+    def view_artist(request, artist_id):
+        pass
+
+    @login_required
+    def edit_artist(request, artist_id):
+        get_artist = Artist.objects.filter(dl91_id=artist_id).first()
+
+        if request.method == 'POST':
+            # Update fields from form inputs
+            get_artist.stage_name = request.POST.get('stage_name', get_artist.stage_name)
+            get_artist.contact = request.POST.get('contact', get_artist.contact)
+            get_artist.artist_charge = request.POST.get('artist_charge', get_artist.artist_charge)
+            
+            # Handle profile picture update
+            if 'profile_picture' in request.FILES:
+                get_artist.profile_picture = request.FILES['profile_picture']
+            
+            try:
+                get_artist.save()
+                messages.success(request, "Artist updated successfully.")
+            except Exception as e:
+                messages.error(request, f"Error updating artist: {str(e)}")
+            
+            return redirect('artists')
+        messages.error(request, "Invalid request method.")
+        return redirect('artists')
+        
+
+    @login_required
+    def delete_artist(request, artist_id):
+        get_artist = Artist.objects.filter(dl91_id=artist_id).first()
+        if get_artist:
+            get_artist.delete()
+            messages.success(request, 'Artist deleted successfully.')
+            return redirect('artists')
+        else:
+            messages.error(request, 'Artist not found.')
+            return redirect('artists')
+
+    @login_required
     def profile(request):
-        return render(request, 'dashboard/prof(ile.html')
+        return render(request, 'dashboard/profile.html')
     
 
 

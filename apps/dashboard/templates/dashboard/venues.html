@@ -1,0 +1,69 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block title %} Venues
+{% endblock %} {% block style %}
+{% endblock %} {% block body %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left Side: Form -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header DL91_BG text-white">
+                    <h5>Add Venue</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'venues_view' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="text-end">
+                            <button type="submit" class="btn wine-btn w-100">Add Venue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Venues Table -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header DL91_BG text-white">
+                    <h5>Venue List</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Venue Name</th>
+                                <th>Party Name</th>
+                                <th>City</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for venue in venues %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ venue.name }}</td>
+                                <td>{{ venue.party_name }}</td>
+                                <td>{{ venue.city }}</td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                                    <form method="post" action="" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No venues found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

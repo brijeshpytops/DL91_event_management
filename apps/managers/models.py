@@ -38,3 +38,32 @@ class ManagerProfileInfo(BaseClass):
         blank=True,
         default=date(2025, 1, 1)
     )
+
+class Venue(BaseClass):
+    manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, verbose_name="Venue Name")
+    party_name = models.CharField(max_length=200, verbose_name="Party Name")
+    party_contact = models.CharField(max_length=20, verbose_name="Party Contact")
+    address = models.TextField(verbose_name="Address")
+    city = models.CharField(max_length=100, verbose_name="City")
+    pincode = models.CharField(max_length=10, verbose_name="Pincode")
+    state = models.CharField(max_length=100, verbose_name="State")
+    country = models.CharField(max_length=100, verbose_name="Country")
+    venue_charge = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="Venue Charge"
+    )
+    public_strength = models.PositiveIntegerField(verbose_name="Public Strength")
+
+    def __str__(self):
+        return self.name
+
+
+class RequiredThing(BaseClass):
+    manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, verbose_name="Thing Name")
+    price_per_qty = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="Price (per Quantity)"
+    )
+
+    def __str__(self):
+        return f"{self.name}"

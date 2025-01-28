@@ -1,5 +1,5 @@
 from django import forms
-from apps.managers.models import Manager
+from apps.managers.models import Manager, Venue, RequiredThing
 
 class ManagerRegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(
@@ -27,3 +27,34 @@ class ManagerRegisterForm(forms.ModelForm):
 
         if password != confirm_password:
             self.add_error('confirm_password', "Password and confirm password do not match")
+
+class VenueForm(forms.ModelForm):
+    class Meta:
+        model = Venue
+        fields = [
+            'name', 'party_name', 'party_contact', 'address', 
+            'city', 'pincode', 'state', 'country', 
+            'venue_charge', 'public_strength'
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Venue Name'}),
+            'party_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Party Name'}),
+            'party_contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Party Contact'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'rows': 3}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}),
+            'pincode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Pincode'}),
+            'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'State'}),
+            'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'}),
+            'venue_charge': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Venue Charge'}),
+            'public_strength': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Public Strength'}),
+        }
+
+
+class RequiredThingForm(forms.ModelForm):
+    class Meta:
+        model = RequiredThing
+        fields = ['name', 'price_per_qty']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Thing Name'}),
+            'price_per_qty': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price (per Quantity)'}),
+        }

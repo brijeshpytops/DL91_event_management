@@ -5,8 +5,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
 
-from apps.managers.forms import ManagerRegisterForm
-from apps.managers.models import Manager
+from apps.managers.forms import ManagerRegisterForm, VenueForm, RequiredThingForm
+from apps.managers.models import Manager, Venue, RequiredThing
 from apps.artist.models import Artist
 from apps.master.helpers.unique import *
 
@@ -22,7 +22,6 @@ def login_required(view_func):
             messages.error(request, 'You are not logged in. Please log in to access the dashboard.')
             return redirect('login')
     return wrapper
-
 
 class AuthViews:
     @staticmethod
@@ -241,10 +240,18 @@ class DashboardViews:
         }
         return render(request, 'dashboard/artists.html', context)
 
-    
     @login_required
     def view_artist(request, artist_id):
-        pass
+        get_artist = Artist.objects.filter(dl91_id=artist_id).first()
+        if get_artist:
+            # Pass the artist to the context
+            context = {
+                'artist': get_artist
+            }
+            return render(request, 'dashboard/artist_view.html', context)
+        else:
+            messages.error(request, 'Artist not found.')
+            return redirect('artists')
 
     @login_required
     def edit_artist(request, artist_id):
@@ -270,7 +277,6 @@ class DashboardViews:
         messages.error(request, "Invalid request method.")
         return redirect('artists')
         
-
     @login_required
     def delete_artist(request, artist_id):
         get_artist = Artist.objects.filter(dl91_id=artist_id).first()
@@ -281,6 +287,36 @@ class DashboardViews:
         else:
             messages.error(request, 'Artist not found.')
             return redirect('artists')
+
+    @login_required
+    def venues_view(request):
+        manager_id_ = request.session['manager_id']
+        venues = Venue.objects.filter(manager_id=manager_id_)
+        if request.method == "POST":
+            form = VenueForm(request.POST)
+            if form.is_valid():
+                venue = form.save(commit=False)
+                venue.manager_id = manager_id_
+                venue.save()
+                messages.success(request, 'Venue created successfully!')
+                return redirect('venues_view')
+        form = VenueForm()
+        return render(request, 'dashboard/venues.html', {'form': form,'venues': venues})
+
+    @login_required
+    def things_view(request):
+        manager_id_ = request.session['manager_id']
+        things = RequiredThing.objects.filter(manager_id=manager_id_)
+        if request.method == "POST":
+            form = RequiredThingForm(request.POST)
+            if form.is_valid():
+                thing = form.save(commit=False)
+                thing.manager_id = manager_id_
+                thing.save()
+                messages.success(request, 'Thing created successfully!')
+                return redirect('things_view')
+        form = RequiredThingForm()
+        return render(request, 'dashboard/things.html', {'form': form, 'things': things})
 
     @login_required
     def profile(request):

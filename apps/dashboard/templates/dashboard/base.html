@@ -62,6 +62,17 @@
         .dropdown-item:hover {
             background-color: var(--skyWine);
         }
+        .wine-btn {
+        background-color: #3b1c32;
+        color: #ffffff;
+        border: none;
+        }
+
+        .wine-btn:hover {
+            background-color: #2a1224; /* Slightly darker on hover */
+            color: #ffffff; /* Text color remains white */
+
+        }
     </style>
 </head>
 <body>
@@ -89,6 +100,12 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'artists' %}"><i class="bi bi-people"></i> Artist</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'venues_view' %}"><i class="bi bi-pin-map"></i> Venue</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'things_view' %}"><i class="bi bi-music-note-list"></i> Things</a>
             </li>
           </ul>
 

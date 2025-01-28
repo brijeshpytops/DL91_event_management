@@ -1,0 +1,71 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block title %} Artist view
+{% endblock %} {% block style %}
+{% endblock %} {% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header DL91_BG text-white">
+            <h3 class="card-title">Artist Profile: {{ artist.stage_name }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Profile Picture -->
+                <div class="col-md-4 text-center">
+                    <img 
+                        src="{{ artist.profile_picture.url }}" 
+                        alt="{{ artist.stage_name }}'s profile picture" 
+                        class="img-fluid rounded-circle shadow-sm mb-3" 
+                        style="width: 150px; height: 150px; object-fit: cover;"
+                    >
+                </div>
+                <!-- Artist Details -->
+                <div class="col-md-8">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Stage Name</th>
+                                <td>{{ artist.stage_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Artist Fields</th>
+                                <td>{{ artist.artist_fields }}</td>
+                            </tr>
+                            <tr>
+                                <th>Contact</th>
+                                <td>{{ artist.contact }}</td>
+                            </tr>
+                            <tr>
+                                <th>Instagram</th>
+                                <td>
+                                    <a href="{{ artist.instagram_profile }}" target="_blank" class="text-decoration-none">
+                                        View Instagram Profile
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Spotify</th>
+                                <td>
+                                    <a href="{{ artist.spotify_link }}" target="_blank" class="text-decoration-none">
+                                        Listen on Spotify
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Artist Charge</th>
+                                <td>${{ artist.artist_charge }}</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td>{{ artist.description }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'artists' %}" class="btn btn-secondary">Back to Artists</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

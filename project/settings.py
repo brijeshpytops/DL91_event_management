@@ -44,7 +44,8 @@ CUSTOM_APPS = [
     'apps.master',
     'apps.dashboard',
     'apps.artist',
-    'apps.managers'
+    'apps.managers',
+    'apps.events'
 ]
 
 THIRD_PARTY_APPS = [

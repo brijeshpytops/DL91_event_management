@@ -67,3 +67,4 @@ class RequiredThing(BaseClass):
 
     def __str__(self):
         return f"{self.name}"
+    

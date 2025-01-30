@@ -1,6 +1,8 @@
 DL91 - project name
 Moduels:
    Event:
+	- name - orgenizer 
+	- contact - orgenizer
 	- Artist
 	- venue
 	- requiredThings [list]

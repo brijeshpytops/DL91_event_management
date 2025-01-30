@@ -9,6 +9,8 @@ from apps.managers.forms import ManagerRegisterForm, VenueForm, RequiredThingFor
 from apps.managers.models import Manager, Venue, RequiredThing
 from apps.artist.models import Artist
 from apps.master.helpers.unique import *
+from apps.events.forms import EventForm
+from apps.events.models import Event
 
 from functools import wraps
 
@@ -176,7 +178,33 @@ class DashboardViews:
     
     @login_required
     def events(request):
-        return render(request, 'dashboard/events.html')
+        manager_id_ = request.session.get('manager_id')  # Get the manager_id from the session
+        if not manager_id_:
+            messages.error(request, 'Manager not found in session. Please log in again.')
+            return redirect('login')  # Redirect to the login page if no manager_id
+
+        events = Event.objects.filter(manager_id=manager_id_)  # Fetch events for the manager
+
+        if request.method == "POST":
+            form = EventForm(request.POST, request.FILES)
+
+            if form.is_valid():
+                event = form.save(commit=False)
+                event.manager_id = manager_id_  # Assign the manager_id to the event
+                event.save()
+                messages.success(request, 'Event created successfully!')
+                return redirect('events')  # Redirect to refresh the page
+            else:
+                print(form.errors)  # Log form errors for debugging
+                messages.error(request, 'Error creating event. Please try again.')
+                return redirect('events')
+        else:
+            form = EventForm()
+
+        context = {'form': form, 'events': events, 'manager_id': manager_id_}
+        return render(request, 'dashboard/events.html', context)
+
+
     
     @login_required
     def artists(request):

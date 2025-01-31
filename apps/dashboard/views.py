@@ -201,6 +201,7 @@ class DashboardViews:
         else:
             form = EventForm()
 
+        print(events)
         context = {'form': form, 'events': events, 'manager_id': manager_id_}
         return render(request, 'dashboard/events.html', context)
 

@@ -561,17 +561,23 @@ Events
   </div>
 </div>
 <script>
-  document.getElementById("generateTickets").addEventListener("click", function() {
-      let ticketCount = document.getElementById("ticketCount").value;
-      let eventId = document.getElementById("eventId").value;
-      
-      if (ticketCount < 1) {
-          alert("Please enter a valid number of tickets.");
-          return;
-      }
+  document.getElementById("generateTickets").addEventListener("click", function () {
+    let ticketCount = document.getElementById("ticketCount").value;
+    let eventId = document.getElementById("eventId").value;
 
-      // Redirect to ticket generation view with the number of tickets
-      window.location.href = `/generate_event_tickets/${eventId}/?ticket_count=${ticketCount}`;
+    if (ticketCount < 1) {
+      alert("Please enter a valid number of tickets.");
+      return;
+    }
+
+    // Redirect to ticket generation view with the number of tickets
+    window.location.href = `/generate_event_tickets/${eventId}/?ticket_count=${ticketCount}`;
+
+    setTimeout(() => {
+      document.getElementById("ticketModal").style.display = "none"; // Hide the modal
+      location.reload(); // Refresh the page
+    }, 1000);
+
   });
 </script>
 {% endblock %}

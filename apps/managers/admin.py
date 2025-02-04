@@ -1,6 +1,5 @@
 from django.contrib import admin
-from apps.managers.models import Manager, ManagerProfileInfo,Venue, RequiredThing
-
+from apps.managers.models import Manager, ManagerProfileInfo,Venue, RequiredThing, ContactMessage
 
 # Register your models here.
 admin.site.register(Manager)
@@ -36,3 +35,5 @@ class RequiredThingAdmin(admin.ModelAdmin):
     list_filter = ("manager",)
     search_fields = ("name", "manager__name")
     fields = ("name", "price_per_qty", "manager")
+
+admin.site.register(ContactMessage)

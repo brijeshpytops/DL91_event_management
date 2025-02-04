@@ -18,7 +18,6 @@ class Manager(BaseClass):
     def __str__(self):
         return f"{self.dl91_id} | {self.first_name} {self.last_name}"
     
-
 class ManagerProfileInfo(BaseClass):
     DIR_NAME=UNIQUE_KEYWORD_MANAGER_PROFILE
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
@@ -57,7 +56,6 @@ class Venue(BaseClass):
     def __str__(self):
         return self.name
 
-
 class RequiredThing(BaseClass):
     manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, verbose_name="Thing Name")
@@ -67,4 +65,9 @@ class RequiredThing(BaseClass):
 
     def __str__(self):
         return f"{self.name}"
+    
+class ContactMessage(BaseClass):
+    manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
+    message = models.TextField()
+
     

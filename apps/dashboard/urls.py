@@ -18,6 +18,9 @@ urlpatterns = [
     path('edit_artist/<str:artist_id>', DashboardViews.edit_artist, name='edit_artist'),
     path('venues_view/', DashboardViews.venues_view, name='venues_view'),
     path('things_view/', DashboardViews.things_view, name='things_view'),
+    path('contact_view/', DashboardViews.contact_view, name='contact_view'),
+    path('edit_message/', DashboardViews.edit_message, name='edit_message'),
+    path('delete_message/', DashboardViews.delete_message, name='delete_message'),
     path('profile/', DashboardViews.profile, name='profile')
 
     # path('events/', DashboardViews.events, name='events'),

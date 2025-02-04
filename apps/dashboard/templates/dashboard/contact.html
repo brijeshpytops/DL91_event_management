@@ -1,0 +1,212 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}
+Contact
+{% endblock %}
+
+{% block style %}
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 100px auto;
+    }
+
+    .msg_box {
+        text-align: center;
+        width: 600px;
+        margin: 0 auto;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border: 5px double rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="msg_box">
+        <h2>Contact Us</h2>
+        <p>Please fill out the form below to reach out to us.</p>
+
+        <!-- Contact form -->
+        <form id="contact-form" action="{% url 'contact_view' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+            </div>
+            <input type="hidden" id="message-id" name="message_id"> <!-- Hidden field for message ID -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <h3>Messages</h3>
+        <!-- Table to display messages -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if get_messages %}
+                {% for message in get_messages %}
+                <tr id="message-{{ message.dl91_id }}">
+                    <td>{{ message.message }}</td>
+                    <td>{{ message.created_at }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-warning edit-btn" data-id="{{ message.dl91_id }}"
+                            data-message="{{ message.message }}">Edit</button> |
+                        <button type="button" class="btn btn-sm btn-danger delete-btn"
+                            data-id="{{ message.dl91_id }}">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="3" style="text-align: center;">No messages found.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <!-- Modal for Edit -->
+        <div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="edit-modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit-modalLabel">Edit Message</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-form" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="edit-message" class="form-label">Message</label>
+                                <textarea class="form-control" id="edit-message" name="new_message" rows="3"
+                                    required></textarea>
+                            </div>
+                            <input type="hidden" id="edit-message-id" name="message_id">
+                            <!-- Hidden field for message ID -->
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Submit contact form (create or update)
+        $('#contact-form').on('submit', function (event) {
+            event.preventDefault();
+            var form_data = $(this).serialize();
+            var message_id = $('#message-id').val();
+
+            // Check if it's an update or new message submission
+            var url = "{% url 'contact_view' %}";
+            var type = message_id ? 'PUT' : 'POST';  // Update if message_id exists, else create new
+
+            $.ajax({
+                url: url,
+                type: type,
+                data: form_data,
+                success: function (response) {
+                    $('#contact-form').trigger('reset');
+                    $('#message-id').val('');  // Reset message ID
+                    // Reload the page after successful form submission
+                    location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        });
+
+        // Edit message
+        $('.edit-btn').on('click', function () {
+            var message_id = $(this).data('id');
+            var message_text = $(this).data('message');
+
+            // Pre-fill the form with existing message data
+            $('#edit-message').val(message_text);
+            $('#edit-message-id').val(message_id);  // Set hidden field with message ID
+
+            // Show the modal
+            $('#edit-modal').modal('show');
+        });
+
+        // Submit edit form (update message)
+        $('#edit-form').on('submit', function (event) {
+            event.preventDefault();
+            var form_data = $(this).serialize();  // Get form data
+            var message_id = $('#edit-message-id').val();
+
+            // Send AJAX request to update message
+            $.ajax({
+                url: "{% url 'edit_message' %}",  // URL to update message
+                type: 'POST',  // Use POST for updating
+                data: form_data,
+                success: function (response) {
+                    $('#edit-modal').modal('hide');  // Hide the modal
+                    alert('Message updated successfully.');
+                    location.reload();  // Reload the page to show updated message
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert('Error updating message.');
+                }
+            });
+        });
+
+        // Delete message
+        $('.delete-btn').on('click', function () {
+            var message_id = $(this).data('id');
+            var row = $(this).closest('tr');
+
+            $.ajax({
+                url: "{% url 'delete_message' %}",  // URL to delete the message
+                type: 'POST',
+                data: {
+                    'message_id': message_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    row.remove();  // Remove the row from the table
+                    alert('Message deleted successfully.');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+</script>
+{% endblock %}

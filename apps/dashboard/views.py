@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 
 from apps.managers.forms import ManagerRegisterForm, VenueForm, RequiredThingForm
-from apps.managers.models import Manager, Venue, RequiredThing
+from apps.managers.models import Manager, Venue, RequiredThing, ContactMessage
 from apps.artist.models import Artist
 from apps.master.helpers.unique import *
 from apps.events.forms import EventForm
@@ -231,7 +231,7 @@ class DashboardViews:
                 width, height = letter
 
                 # Full Blue Background
-                pdf.setFillColor(colors.HexColor("#3b1c32"))  # Dark Blue
+                pdf.setFillColor(colors.HexColor("#3b1c32"))  # Dark wine
                 pdf.rect(0, 0, width, height, fill=True, stroke=False)
 
                 # White Ticket Container
@@ -270,7 +270,7 @@ class DashboardViews:
 
                 # Ticket Code
                 pdf.setFont("Helvetica-Bold", 14)
-                pdf.setFillColor(colors.HexColor("#ffcc00"))  # Yellow Ticket Code
+                pdf.setFillColor(colors.HexColor("#3b1c32"))  # Yellow Ticket Code
                 pdf.drawString(ticket_x + 1 * inch, ticket_y + 0.6 * inch, f"Ticket Code: {ticket_code}")
 
                 # Save PDF
@@ -426,6 +426,58 @@ class DashboardViews:
                 return redirect('things_view')
         form = RequiredThingForm()
         return render(request, 'dashboard/things.html', {'form': form, 'things': things})
+
+    @login_required
+    def contact_view(request):
+        manager = request.session['manager_id']
+        get_messages = ContactMessage.objects.filter(manager_id=manager)
+        if request.method == 'POST':
+            message_ = request.POST['message']
+            print(message_)
+            new_msg = ContactMessage.objects.create(
+                manager_id=manager,
+                message=message_
+            )
+            new_msg.save()
+            print(new_msg.dl91_id)
+            messages.success(request, 'Your message has been sent successfully.')
+            return redirect('contact_view')
+        context = {
+            'get_messages': get_messages,
+            'total_messages': get_messages.count()
+        }
+        return render(
+            request,
+            'dashboard/contact.html',
+            context
+        )
+
+    @login_required
+    def edit_message(request):
+        msg_id = request.POST['message_id']
+        if msg_id:
+            get_message = ContactMessage.objects.filter(dl91_id=msg_id).first()
+            if get_message:
+                get_message.message = request.POST['new_message']
+                get_message.save()
+                messages.success(request, 'Message updated successfully.')
+                return redirect('contact_view')
+        else:
+            messages.error(request, 'Message not found.')
+            return redirect('contact_view')
+
+    @login_required
+    def delete_message(request):
+        msg_id = request.POST['message_id']
+        if msg_id:
+            get_message = ContactMessage.objects.filter(dl91_id=msg_id).first()
+            if get_message:
+                get_message.delete()
+                messages.success(request, 'Message deleted successfully.')
+                return redirect('contact_view')
+        else:
+            messages.error(request, 'Message not found.')
+            return redirect('contact_view')
 
     @login_required
     def profile(request):

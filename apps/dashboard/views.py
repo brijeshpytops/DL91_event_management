@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 
 from apps.managers.forms import ManagerRegisterForm, VenueForm, RequiredThingForm
 from apps.managers.models import Manager, Venue, RequiredThing
@@ -13,6 +14,15 @@ from apps.events.forms import EventForm
 from apps.events.models import Event
 
 from functools import wraps
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.utils import ImageReader
+from reportlab.lib.units import inch
+
+import qrcode
+import zipfile
 
 # provide me decorator for authenticated view: login_required
 def login_required(view_func):
@@ -205,7 +215,77 @@ class DashboardViews:
         context = {'form': form, 'events': events, 'manager_id': manager_id_}
         return render(request, 'dashboard/events.html', context)
 
+    @login_required
+    def generate_event_tickets(request, event_id):
+        event = Event.objects.get(dl91_id=event_id)
+        
+        # Get ticket count from GET request (default 100)
+        ticket_count = int(request.GET.get('ticket_count', 100))
 
+        # Create a ZIP file buffer
+        zip_buffer = BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            for i in range(1, ticket_count + 1):  # Generate tickets dynamically
+                ticket_buffer = BytesIO()
+                pdf = canvas.Canvas(ticket_buffer, pagesize=letter)
+                width, height = letter
+
+                # Full Blue Background
+                pdf.setFillColor(colors.HexColor("#3b1c32"))  # Dark Blue
+                pdf.rect(0, 0, width, height, fill=True, stroke=False)
+
+                # White Ticket Container
+                ticket_width, ticket_height = 7.5 * inch, 3.5 * inch
+                ticket_x, ticket_y = (width - ticket_width) / 2, (height - ticket_height) / 2
+                pdf.setFillColor(colors.white)
+                pdf.roundRect(ticket_x, ticket_y, ticket_width, ticket_height, 10, fill=True, stroke=False)
+
+                # Event Image
+                if event.event_image:
+                    img = ImageReader(event.event_image.path)
+                    pdf.drawImage(img, ticket_x + 0.5 * inch, ticket_y + ticket_height - 2.5 * inch, width=1.5 * inch, height=1.5 * inch)
+
+                # Title & Event Details
+                pdf.setFillColor(colors.black)
+                pdf.setFont("Helvetica-Bold", 16)
+                pdf.drawString(ticket_x + 2.2 * inch, ticket_y + ticket_height - 1.0 * inch, event.event_name)
+
+                pdf.setFont("Helvetica", 12)
+                pdf.drawString(ticket_x + 2.2 * inch, ticket_y + ticket_height - 1.4 * inch, f"Date: {event.event_date}")
+                pdf.drawString(ticket_x + 2.2 * inch, ticket_y + ticket_height - 1.7 * inch, f"Time: {event.event_start_time} - {event.event_end_time}")
+                pdf.drawString(ticket_x + 2.2 * inch, ticket_y + ticket_height - 2.0 * inch, f"Venue: {event.venue}")
+                pdf.drawString(ticket_x + 2.2 * inch, ticket_y + ticket_height - 2.3 * inch, f"Artist: {event.artist}")
+
+                # Generate QR Code
+                ticket_code = f"{event.dl91_id}{i:05d}"  # Unique ticket code (EVT00001, EVT00002, ...)
+                qr_data = f"Event: {event.event_name}\nDate: {event.event_date}\nTime: {event.event_start_time} - {event.event_end_time}\nVenue: {event.venue}\nArtist: {event.artist}\nTicket Code: {ticket_code}"
+                qr = qrcode.make(qr_data)
+                qr_buffer = BytesIO()
+                qr.save(qr_buffer, format="PNG")
+                qr_buffer.seek(0)
+                qr_image = ImageReader(qr_buffer)
+
+                # Draw QR Code
+                pdf.drawImage(qr_image, ticket_x + ticket_width - 1.8 * inch, ticket_y + 1 * inch, width=1.5 * inch, height=1.5 * inch)
+
+                # Ticket Code
+                pdf.setFont("Helvetica-Bold", 14)
+                pdf.setFillColor(colors.HexColor("#ffcc00"))  # Yellow Ticket Code
+                pdf.drawString(ticket_x + 1 * inch, ticket_y + 0.6 * inch, f"Ticket Code: {ticket_code}")
+
+                # Save PDF
+                pdf.showPage()
+                pdf.save()
+
+                # Save PDF to ZIP
+                ticket_buffer.seek(0)
+                zip_file.writestr(f"ticket_{ticket_code}.pdf", ticket_buffer.getvalue())
+
+        # Return ZIP file
+        zip_buffer.seek(0)
+        response = HttpResponse(zip_buffer, content_type="application/zip")
+        response["Content-Disposition"] = f'attachment; filename="event_tickets_{event.event_name}.zip"'
+        return response
     
     @login_required
     def artists(request):

@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout/', AuthViews.logout, name='logout'),
     path('dashboard/', DashboardViews.dashboard, name='dashboard'),
     path('events/', DashboardViews.events, name='events'),
+     path('generate_event_tickets/<str:event_id>/', DashboardViews.generate_event_tickets, name='generate_event_tickets'),
     path('artists/', DashboardViews.artists, name='artists'),
     path('view_artist/<str:artist_id>', DashboardViews.view_artist, name='view_artist'),
     path('delete_artist/<str:artist_id>', DashboardViews.delete_artist, name='delete_artist'),

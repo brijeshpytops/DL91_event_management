@@ -45,11 +45,12 @@ CUSTOM_APPS = [
     'apps.dashboard',
     'apps.artist',
     'apps.managers',
-    'apps.events'
+    'apps.events',
+    'apps.wines'
 ]
 
 THIRD_PARTY_APPS = [
-
+    'rest_framework'
 ]
 
 INSTALLED_APPS += CUSTOM_APPS

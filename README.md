@@ -199,3 +199,17 @@ s-4] button type must be submit
 
 # session and cookies:
 https://witzcode.pythonanywhere.com/blog-details/cd68a82d-37e4-4ce6-a0c0-40c5cb0644b7_blog
+
+
+API SETUP:
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+
+LIST_API
+    - get all data - GET
+    - insert new data - POST
+
+DETAIL_API(ID: required)
+    - get specific data - GET
+    - update specific data with all fields - PUT
+    - update specific data with partially fields - PATCH
+    - delete specific data - DELETE

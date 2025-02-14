@@ -5,6 +5,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.http import HttpResponse
+from django.utils import timezone
+from datetime import datetime
 
 from apps.managers.forms import ManagerRegisterForm, VenueForm, RequiredThingForm
 from apps.managers.models import Manager, Venue, RequiredThing, ContactMessage
@@ -23,6 +25,10 @@ from reportlab.lib.units import inch
 
 import qrcode
 import zipfile
+
+current_time = timezone.now()
+current_month = current_time.month
+current_year = current_time.year
 
 # provide me decorator for authenticated view: login_required
 def login_required(view_func):
@@ -184,7 +190,31 @@ class AuthViews:
 class DashboardViews:
     @login_required
     def dashboard(request):
-        return render(request, 'dashboard/dashboard.html')
+        manager = request.session.get('manager_id') 
+        total_events = Event.objects.filter(
+            manager_id=manager  # Get the manager_id from the session
+        )
+        upcoming_events = Event.objects.filter(
+            manager_id=manager,
+            created_at__year=current_year,  # Filter by current year
+            created_at__month=current_month  # Filter by current month
+        )
+        total_artist = Artist.objects.filter(
+            manager_id=manager  # Get the manager_id from the session
+        )
+        total_things = RequiredThing.objects.filter(
+            manager_id=manager  # Get the manager_id from the session
+        )
+
+        context = {
+            'total_events': total_events.count(),  # Total events for the manager
+            'upcoming_events': upcoming_events,  # Upcoming events for the manager
+            'total_artists': total_artist.count(),  # Total artists for the manager
+            'total_things': total_things.count(),  # Total things for the manager
+            
+        }
+
+        return render(request, 'dashboard/dashboard.html', context)
     
     @login_required
     def events(request):

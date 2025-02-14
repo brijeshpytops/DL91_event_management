@@ -9,4 +9,64 @@ Dashboard
 {% endblock %}
 
 {% block body %}
+<div class="container">
+    <h2 class="mb-4">Event Management Dashboard</h2>
+    
+    <!-- Dashboard Stats -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <div class="card text-dark border border-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Events</h5>
+                    <p class="card-text">{{ total_events }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-dark border border-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Total Artists</h5>
+                    <p class="card-text">{{ total_artists }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-dark border border-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Required Items</h5>
+                    <p class="card-text">{{ total_things }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-dark border border-success">
+                <div class="card-body">
+                    <h5 class="card-title">Upcoming Events</h5>
+                    {% if upcoming_events %}
+                    {% for upcoming_event in upcoming_events %}
+                    <li class="card-text">{{ upcoming_event.event_name }} [{{upcoming_event.created_at}}]</li>
+                    {% endfor %}
+                    {% else %}
+                    <p class="card-text">No upcoming events found</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-dark border border-info">
+                <div class="card-body">
+                    <h5 class="card-title">Popular Artists</h5>
+                    {% if popular_artists %}
+                    {% for popular_artist in popular_artists %}
+                    <li class="card-text">{{ popular_artist.artist_name }}</li>
+                    {% endfor %}
+                    {% else %}
+                    <p class="card-text">No popular artists found</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

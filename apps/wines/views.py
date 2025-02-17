@@ -13,7 +13,7 @@ def wineListAPI(request):
         serializer = WineSerializer(querySet, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
+
     if request.method == 'POST':
         serializer = WineSerializer(data=request.data)
         if serializer.is_valid():
@@ -33,7 +33,7 @@ def wineDetailsAPI(request, wine_id):
     if request.method == 'GET':
         serializer = WineSerializer(wine)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     if request.method == 'PUT':
         serializer = WineSerializer(wine, data=request.data)
         if serializer.is_valid():
@@ -49,8 +49,8 @@ def wineDetailsAPI(request, wine_id):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    
+
+
     if request.method == 'DELETE':
         wine.delete()
         return Response({'Message': 'Wine deleted'}, status=status.HTTP_204_NO_CONTENT)

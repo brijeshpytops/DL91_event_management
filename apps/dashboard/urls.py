@@ -21,6 +21,7 @@ urlpatterns = [
     path('contact_view/', DashboardViews.contact_view, name='contact_view'),
     path('edit_message/', DashboardViews.edit_message, name='edit_message'),
     path('delete_message/', DashboardViews.delete_message, name='delete_message'),
+    path('wines_view/', DashboardViews.wines_view, name='wines_view'),
     path('profile/', DashboardViews.profile, name='profile')
 
     # path('events/', DashboardViews.events, name='events'),

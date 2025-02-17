@@ -25,10 +25,14 @@ from reportlab.lib.units import inch
 
 import qrcode
 import zipfile
+import requests
 
 current_time = timezone.now()
 current_month = current_time.month
 current_year = current_time.year
+
+LOCAL_HOST = f'http://127.0.0.1:8000'
+PRODUCTION_HOST = f"https://dl91.pythonanywhere.com"
 
 # provide me decorator for authenticated view: login_required
 def login_required(view_func):
@@ -508,6 +512,16 @@ class DashboardViews:
         else:
             messages.error(request, 'Message not found.')
             return redirect('contact_view')
+
+    @login_required
+    def wines_view(request):
+        listAPIWineURL = f"{PRODUCTION_HOST}/api/wines/"
+
+        response = requests.get(listAPIWineURL)
+        if response.status_code == 200:
+            wines = response.json()
+            return render(request, 'dashboard/wines.html', {'wines': wines})
+        return render(request, 'dashboard/wines.html')
 
     @login_required
     def profile(request):

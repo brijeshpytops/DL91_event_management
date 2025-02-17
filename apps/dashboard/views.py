@@ -515,20 +515,44 @@ class DashboardViews:
 
     @login_required
     def wines_view(request):
-        listAPIWineURL = f"{LOCAL_HOST}/api/wines/"
+        manager_id_ = request.session['manager_id']
+        if request.method == 'POST':
+            wine_name_ = request.POST['wine_name']
+            wine_price_ = request.POST['wine_price']
+            wine_type_ = request.POST['wine_type']
+            alcohol_content_ = request.POST['alcohol_content']
+            wine_qty_ml_ = request.POST['wine_qty_ml']
+            manager_id=manager_id_
+
+            addWineUrl = f"{LOCAL_HOST}/api/wines/"
+
+            response = requests.post(addWineUrl, json={
+                'wine_name': wine_name_,
+                'wine_price': wine_price_,
+                'wine_type': wine_type_,
+                'alcohol_content': alcohol_content_,
+                'wine_qty_ml': wine_qty_ml_,
+                'manager_id': manager_id_
+            })
+
+            if response.status_code == 201:
+                wine_id = response.json()['dl91_id']
+                messages.success(request, 'Wine added successfully.')
+                return redirect('wines_view')
+            else:
+                messages.error(request, 'Error adding wine to API.')
+                return redirect('wines_view')
+        listAPIWineURL = f"{LOCAL_HOST}/api/mangerWines/?manager={manager_id_}"
 
         response = requests.get(listAPIWineURL)
 
         print(response.status_code)
         if response.status_code == 200:
             wines = response.json()
-            print(wines)
             return render(request, 'dashboard/wines.html', {'wines': wines})
         else:
             messages.error(request, 'Error fetching wines from API.')
-
-        return redirect('wines_view')
-
+            return redirect('wines_view')
         return render(request, 'dashboard/wines.html')
 
     @login_required

@@ -31,3 +31,11 @@ class WineSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class WineManagerSerializer(serializers.ModelSerializer):
+    # Add manager_id to include the manager's dl91_id in the serialized data
+    manager_id = serializers.UUIDField(source='manager.dl91_id')
+
+    class Meta:
+        model = Wine
+        fields = ['dl91_id', 'wine_name', 'wine_price', 'wine_type', 'alcohol_content', 'wine_qty_ml', 'manager_id']

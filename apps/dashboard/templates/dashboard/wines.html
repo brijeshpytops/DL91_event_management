@@ -9,4 +9,83 @@ Wines
 {% endblock %}
 
 {% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Wine List</h2>
+    
+        <!-- Add Wine Button -->
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWineModal">Add Wine</a>
+    </div>
+    
+    <!-- Modal for adding wine -->
+    <div class="modal fade" id="addWineModal" tabindex="-1" aria-labelledby="addWineModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addWineModalLabel">Add New Wine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to add wine -->
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="wine_name" class="form-label">Wine Name</label>
+                            <input type="text" class="form-control" id="wine_name" name="wine_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wine_price" class="form-label">Wine Price</label>
+                            <input type="number" step="0.01" class="form-control" id="wine_price" name="wine_price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wine_type" class="form-label">Wine Type</label>
+                            <select class="form-select" id="wine_type" name="wine_type" required>
+                                <option value="Red">Red</option>
+                                <option value="White">White</option>
+                                <option value="Rosé">Rosé</option>
+                                <option value="Sparkling">Sparkling</option>
+                                <option value="Dessert">Dessert</option>
+                                <option value="Fortified">Fortified</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="alcohol_content" class="form-label">Alcohol Content (%)</label>
+                            <input type="number" step="0.1" class="form-control" id="alcohol_content" name="alcohol_content" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wine_qty_ml" class="form-label">Wine Quantity (ml)</label>
+                            <input type="number" class="form-control" id="wine_qty_ml" name="wine_qty_ml" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Wine</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Table to display wine data -->
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Wine Name</th>
+                <th scope="col">Wine Price</th>
+                <th scope="col">Wine Type</th>
+                <th scope="col">Alcohol Content</th>
+                <th scope="col">Quantity (ml)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through the wine data -->
+            {% for wine in wines %}
+            <tr>
+                <td>{{ wine.wine_name }}</td>
+                <td>{{ wine.wine_price }}</td>
+                <td>{{ wine.wine_type }}</td>
+                <td>{{ wine.alcohol_content }}%</td>
+                <td>{{ wine.wine_qty_ml }} ml</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

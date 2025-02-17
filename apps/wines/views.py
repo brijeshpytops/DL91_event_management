@@ -8,7 +8,8 @@ from apps.wines.serializers import WineSerializer
 @api_view(['GET', 'POST'])
 def wineListAPI(request):
     if request.method == 'GET':
-        querySet = Wine.objects.all()
+        manager_id_ = request.session['manager_id']
+        querySet = Wine.objects.filter(manager_id=manager_id_)
         serializer = WineSerializer(querySet, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

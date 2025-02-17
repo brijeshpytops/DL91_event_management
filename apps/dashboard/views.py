@@ -32,7 +32,7 @@ current_month = current_time.month
 current_year = current_time.year
 
 LOCAL_HOST = f'http://127.0.0.1:8000'
-PRODUCTION_HOST = f"https://dl91.pythonanywhere.com"
+# PRODUCTION_HOST = f"https://dl91.pythonanywhere.com"
 
 # provide me decorator for authenticated view: login_required
 def login_required(view_func):
@@ -515,12 +515,20 @@ class DashboardViews:
 
     @login_required
     def wines_view(request):
-        listAPIWineURL = f"{PRODUCTION_HOST}/api/wines/"
+        listAPIWineURL = f"{LOCAL_HOST}/api/wines/"
 
         response = requests.get(listAPIWineURL)
+
+        print(response.status_code)
         if response.status_code == 200:
             wines = response.json()
+            print(wines)
             return render(request, 'dashboard/wines.html', {'wines': wines})
+        else:
+            messages.error(request, 'Error fetching wines from API.')
+
+        return redirect('wines_view')
+
         return render(request, 'dashboard/wines.html')
 
     @login_required
